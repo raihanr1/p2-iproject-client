@@ -3,6 +3,7 @@ export default {
     if (payload.access_token) {
       localStorage.setItem("access_token", payload.access_token);
       state.isLogin = true;
+      console.log(state.isLogin, ">> asupp");
     } else {
       state.token = payload;
     }
@@ -15,5 +16,17 @@ export default {
   },
   HANDLE_ERROR_ACTION: function (state, error) {
     state.error = error;
+  },
+  HANDLE_CREATE_NEW_PROPERTY: function (state, data) {
+    state.newProperty = data;
+  },
+  HANDLE_DATA_PROPERTIES: function (state, data) {
+    state.properties = data;
+  },
+  HANDLE_CHANGE_STATUS: function (state, data) {
+    state.status = data;
+  },
+  HANDLE_UPDATE_PROPERTY: function (state, data) {
+    state.update = data;
   },
 };

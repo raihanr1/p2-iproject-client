@@ -35,7 +35,7 @@ export default {
       });
       commit("HANDLE_GET_TOKEN_USER", response.data);
     } catch (error) {
-      console.log(error);
+      commit("HANDLE_ERROR_ACTION", error);
     }
   },
   checkValidToken: async function ({ commit }, { UserId, payload }) {
@@ -53,4 +53,67 @@ export default {
       commit("HANDLE_ERROR_ACTION", error);
     }
   },
+  productionProperty: async function ({ commit }, data) {
+    try {
+      let response = await axios({
+        method: "post",
+        url: "/admin/property",
+        data,
+        headers: {
+          access_token: localStorage.getItem("access_token"),
+        },
+      });
+      commit("HANDLE_CREATE_NEW_PROPERTY", response.data);
+    } catch (error) {
+      commit("HANDLE_ERROR_ACTION", error);
+    }
+  },
+  fetchAllProperty: async function ({ commit }) {
+    try {
+      let response = await axios({
+        method: "get",
+        url: "/admin/property",
+        headers: {
+          access_token: localStorage.getItem("access_token"),
+        },
+      });
+      commit("HANDLE_DATA_PROPERTIES", response.data);
+    } catch (error) {
+      commit("HANDLE_ERROR_ACTION", error);
+    }
+  },
+  changeStatus: async function ({ commit, dispatch }, { status, id }) {
+    try {
+      await axios({
+        method: "patch",
+        url: `/admin/property/${id}`,
+        headers: {
+          access_token: localStorage.getItem("access_token"),
+        },
+        data: {
+          status,
+        },
+      });
+      dispatch("fetchAllProperty");
+      commit("HANDLE_CHANGE_STATUS", true);
+    } catch (error) {
+      commit("HANDLE_ERROR_ACTION", error);
+    }
+  },
+  updatePropertyByAdmin: async function ({ commit }, { data, id }) {
+    try {
+      await axios({
+        method: "put",
+        url: `/admin/property/${id}`,
+        headers: {
+          access_token: localStorage.getItem("access_token"),
+        },
+        data,
+      });
+      commit("HANDLE_UPDATE_PROPERTY", true);
+    } catch (error) {
+      commit("HANDLE_ERROR_ACTION", error);
+    }
+  },
+  fetchAllPropertyUsers: function ({ commit }) {},
 };

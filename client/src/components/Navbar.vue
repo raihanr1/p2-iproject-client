@@ -23,19 +23,49 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
-        <li class="nav-item active">
+        <li
+          @click.prevent="changePage('/home')"
+          v-if="!isAdmin"
+          class="nav-item active"
+        >
           <a class="nav-link">Home</a>
         </li>
-        <li class="nav-item">
+        <li
+          v-if="!isAdmin"
+          class="nav-item"
+          @click.prevent="changePage('/bookmark')"
+        >
           <a class="nav-link">My BookMark</a>
         </li>
-        <li class="nav-item">
+        <li
+          v-if="isAdmin"
+          class="nav-item"
+          @click.prevent="changePage('/cms/property')"
+        >
+          <a class="nav-link">Property</a>
+        </li>
+        <li
+          v-if="isAdmin"
+          class="nav-item"
+          @click.prevent="changePage('/cms/production')"
+        >
+          <a class="nav-link">Production</a>
+        </li>
+        <li
+          v-if="!isAdmin"
+          class="nav-item"
+          @click.prevent="changePage('/about')"
+        >
           <a class="nav-link">About</a>
         </li>
-        <li class="nav-item">
+        <li
+          v-if="isAdmin"
+          class="nav-item"
+          @click.prevent="changePage('/cms/transaction')"
+        >
           <a class="nav-link">Transaction</a>
         </li>
-        <li class="nav-item">
+        <li v-if="!isAdmin" class="nav-item">
           <a class="nav-link">Logout</a>
         </li>
       </ul>
@@ -46,6 +76,16 @@
 <script>
 export default {
   name: "Navvar",
+  computed: {
+    isAdmin: function () {
+      return this.$store.state.users.isAdmin;
+    },
+  },
+  methods: {
+    changePage: function (path) {
+      this.$router.push(path);
+    },
+  },
 };
 </script>
 

@@ -34,6 +34,11 @@ export default {
     Carousel3d,
     Slide,
   },
+  created: function () {
+    if (this.$route.query.id) {
+      this.$store.dispatch("users/");
+    }
+  },
 };
 </script>
 

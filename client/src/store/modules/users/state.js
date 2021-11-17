@@ -5,5 +5,10 @@ export default () => {
     token: null,
     isRegister: false,
     successSend: null,
+    isAdmin: false,
+    newProperty: null,
+    properties: [],
+    status: false,
+    update: false,
   };
 };
