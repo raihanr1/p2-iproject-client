@@ -8,9 +8,10 @@
             <div class="row">
               <div class="col-md-9 col-lg-8 mx-auto">
                 <h3 class="login-heading mb-4">Maulana Group Property</h3>
-                <form>
+                <form @submit.prevent="loginAccount">
                   <div class="form-floating mb-3">
                     <input
+                      v-model="email"
                       type="email"
                       class="form-control"
                       id="floatingInput"
@@ -20,6 +21,7 @@
                   </div>
                   <div class="form-floating mb-3">
                     <input
+                      v-model="password"
                       type="password"
                       class="form-control"
                       id="floatingPassword"
@@ -40,7 +42,9 @@
                       Sign in
                     </button>
                     <div class="text-center">
-                      <a class="small">Can't get access? Register here!</a>
+                      <a class="small" @click.prevent="registerPage"
+                        >Can't get access? Register here!</a
+                      >
                     </div>
                   </div>
                 </form>
@@ -54,7 +58,49 @@
 </template>
 
 <script>
-export default {};
+import Swal from "sweetalert2";
+export default {
+  data: function () {
+    return {
+      email: null,
+      password: null,
+    };
+  },
+  methods: {
+    loginAccount: function () {
+      this.$store.dispatch("users/loginAction", {
+        email: this.email,
+        password: this.password,
+      });
+    },
+    registerPage: function () {
+      this.$router.push("/register");
+    },
+  },
+  watch: {
+    "$store.state.users.isLogin": function () {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: this.$store.state.users.isLogin,
+      });
+    },
+    "$store.state.users.token": function () {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: this.$store.state.users.token,
+      });
+    },
+    "$store.state.users.error": function () {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: this.$store.state.users.error.response.data.message,
+      });
+    },
+  },
+};
 </script>
 
 <style scoped>

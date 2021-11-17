@@ -8,17 +8,17 @@
           <div class="card-img-left d-none d-md-flex"></div>
           <div class="card-body p-4 p-sm-5">
             <h5 class="card-title text-center mb-5 fw-light fs-5">Register</h5>
-            <form>
+            <form @submit.prevent="userRegister">
               <div class="form-floating mb-3">
                 <input
                   type="text"
                   class="form-control"
                   id="floatingInputUsername"
                   placeholder="myusername"
-                  required
                   autofocus
+                  v-model="given_name"
                 />
-                <label for="floatingInputUsername">Username</label>
+                <label for="floatingInputUsername">User Name</label>
               </div>
 
               <div class="form-floating mb-3">
@@ -27,6 +27,7 @@
                   class="form-control"
                   id="floatingInputEmail"
                   placeholder="name@example.com"
+                  v-model="email"
                 />
                 <label for="floatingInputEmail">Email address</label>
               </div>
@@ -39,6 +40,7 @@
                   class="form-control"
                   id="floatingPassword"
                   placeholder="Password"
+                  v-model="password"
                 />
                 <label for="floatingPassword">Password</label>
               </div>
@@ -49,6 +51,7 @@
                   class="form-control"
                   id="floatingMobileNumberConfirm"
                   placeholder="+62"
+                  v-model="mobile_num"
                 />
                 <label for="floatingPasswordConfirm">Mobile Number</label>
               </div>
@@ -59,6 +62,7 @@
                   class="form-control"
                   id="floatingAddressConfirm"
                   placeholder="st..."
+                  v-model="address"
                 />
                 <label for="floatingPasswordConfirm">Address</label>
               </div>
@@ -76,7 +80,9 @@
                 </button>
               </div>
 
-              <a class="d-block text-center mt-2 small" href="#"
+              <a
+                class="d-block text-center mt-2 small"
+                @click.prevent="loginPage"
                 >Have an account? Sign In</a
               >
 
@@ -90,8 +96,52 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
 export default {
   name: "RegisterPage",
+  data: function () {
+    return {
+      email: null,
+      password: null,
+      given_name: null,
+      mobile_num: null,
+      address: null,
+    };
+  },
+  methods: {
+    loginPage: function () {
+      this.$router.push("/login");
+    },
+    userRegister: function () {
+      let data = {
+        email: this.email,
+        password: this.password,
+        given_name: this.given_name,
+        mobile_num: this.mobile_num,
+        address: this.address,
+      };
+      this.$store.dispatch("users/registerAction", data);
+    },
+  },
+  watch: {
+    "$store.state.users.isRegister": function () {
+      if (this.$store.state.users.isRegister) {
+        Swal.fire(
+          "Your account has been saved. Please sign in!",
+          "",
+          "success"
+        );
+        this.$store.commit("users/HANDLE_REGISTER_ACTION", false);
+      }
+    },
+    "$store.state.users.error": function () {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: this.$store.state.users.error.response.data.message,
+      });
+    },
+  },
 };
 </script>
 
