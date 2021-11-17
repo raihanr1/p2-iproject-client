@@ -4,5 +4,6 @@ export default () => {
     error: null,
     token: null,
     isRegister: false,
+    successSend: null,
   };
 };
