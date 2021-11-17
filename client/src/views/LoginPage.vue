@@ -8,7 +8,7 @@
             <div class="row">
               <div class="col-md-9 col-lg-8 mx-auto">
                 <h3 class="login-heading mb-4">Maulana Group Property</h3>
-                <form @submit.prevent="loginAccount">
+                <form v-if="!authentication" @submit.prevent="loginAccount">
                   <div class="form-floating mb-3">
                     <input
                       v-model="email"
@@ -48,6 +48,36 @@
                     </div>
                   </div>
                 </form>
+                <form v-if="authentication" @submit.prevent="checkValidToken">
+                  <div class="form-floating mb-3">
+                    <input
+                      v-model="token"
+                      type="number"
+                      class="form-control"
+                      id="tokenInput"
+                      placeholder="token"
+                    />
+                    <label for="floatingInput">Access Token</label>
+                  </div>
+                  <div class="d-grid">
+                    <button
+                      class="
+                        btn btn-lg btn-primary btn-login
+                        text-uppercase
+                        fw-bold
+                        mb-2
+                      "
+                      type="submit"
+                    >
+                      Verification
+                    </button>
+                  </div>
+                  <div class="text-center">
+                    <a class="small" @click.prevent="sendValidToken(user)"
+                      >Send request token with gmail</a
+                    >
+                  </div>
+                </form>
               </div>
             </div>
           </div>
@@ -64,6 +94,9 @@ export default {
     return {
       email: null,
       password: null,
+      token: null,
+      authentication: null,
+      user: null,
     };
   },
   methods: {
@@ -76,28 +109,64 @@ export default {
     registerPage: function () {
       this.$router.push("/register");
     },
+    sendValidToken: function (UserId) {
+      this.$store.dispatch("users/requestTokenAuthUser", UserId);
+    },
+    checkValidToken: function () {
+      this.$store.dispatch("users/checkValidToken", {
+        UserId: this.user,
+        payload: this.token,
+      });
+    },
   },
   watch: {
     "$store.state.users.isLogin": function () {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: this.$store.state.users.isLogin,
-      });
+      Swal.fire("Save!!!", "", "success");
+      this.$router.push("/home");
     },
     "$store.state.users.token": function () {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: this.$store.state.users.token,
-      });
+      Swal.fire(
+        "Please check your email for verification token!",
+        "",
+        "success"
+      );
+      this.authentication = true;
+      this.user = this.$store.state.users.token.id;
+    },
+    "$store.state.users.successSend": function () {
+      if (this.$store.state.users.successSend !== null) {
+        Swal.fire(
+          "Please check your email for verification token!",
+          "",
+          "success"
+        );
+        this.authentication = true;
+        this.user = this.$store.state.users.successSend.id;
+        this.$store.commit("users/HANDLE_GET_TOKEN_USER", null);
+      }
     },
     "$store.state.users.error": function () {
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: this.$store.state.users.error.response.data.message,
-      });
+      if (
+        this.$store.state.users.error.response.data.message ===
+        "Verification token user"
+      ) {
+        this.user = this.$store.state.users.error.response.data.id;
+        this.authentication = true;
+      } else if (
+        this.$store.state.users.error.response.data.message === "User not found"
+      ) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please login first",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: this.$store.state.users.error.response.data.message,
+        });
+      }
     },
   },
 };
