@@ -66,9 +66,14 @@
                 />
                 <label for="floatingPasswordConfirm">Address</label>
               </div>
-
+              <div v-if="loading" class="text-center">
+                <div class="spinner-border" role="status">
+                  <span class="sr-only"></span>
+                </div>
+              </div>
               <div class="d-grid mb-2">
                 <button
+                  v-if="!loading"
                   class="
                     btn btn-lg btn-primary btn-login
                     fw-bold
@@ -106,6 +111,7 @@ export default {
       given_name: null,
       mobile_num: null,
       address: null,
+      loading: false,
     };
   },
   methods: {
@@ -124,6 +130,13 @@ export default {
     },
   },
   watch: {
+    "$store.state.users.loading": function () {
+      if (this.$store.state.users.loading) {
+        this.loading = this.$store.state.users.loading;
+      } else {
+        this.loading = false;
+      }
+    },
     "$store.state.users.isRegister": function () {
       if (this.$store.state.users.isRegister) {
         Swal.fire(

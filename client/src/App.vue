@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import axios from "./axios-config/axios";
 import Navbar from "./components/Navbar.vue";
 export default {
   name: "App",
@@ -19,10 +20,28 @@ export default {
   },
   created: function () {
     if (localStorage.getItem("access_token")) {
-      let data = {
-        access_token: localStorage.getItem("access_token"),
-      };
-      this.$store.commit("users/HANDLE_LOGIN_ACTION", data);
+      axios({
+        method: "GET",
+        url: "/home/user",
+        headers: {
+          access_token: localStorage.getItem("access_token"),
+        },
+      })
+        .then(({ data }) => {
+          if (data.role === "Admin") {
+            this.$store.commit("users/HANDLE_LOGIN_ACTION", {
+              access_token: localStorage.getItem("access_token"),
+            });
+            this.$store.commit("users/HANDLE_UI_ADMIN", true);
+          } else {
+            this.$store.commit("users/HANDLE_LOGIN_ACTION", {
+              access_token: localStorage.getItem("access_token"),
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   },
 };

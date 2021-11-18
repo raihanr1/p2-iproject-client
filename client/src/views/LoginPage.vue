@@ -30,7 +30,13 @@
                     <label for="floatingPassword">Password</label>
                   </div>
                   <div class="d-grid">
+                    <div v-if="loading" class="text-center">
+                      <div class="spinner-border" role="status">
+                        <span class="sr-only"></span>
+                      </div>
+                    </div>
                     <button
+                      v-if="!loading"
                       class="
                         btn btn-lg btn-primary btn-login
                         text-uppercase
@@ -97,6 +103,7 @@ export default {
       token: null,
       authentication: null,
       user: null,
+      loading: false,
     };
   },
   methods: {
@@ -120,8 +127,14 @@ export default {
     },
   },
   watch: {
+    "$store.state.users.loading": function () {
+      if (this.$store.state.users.loading) {
+        this.loading = this.$store.state.users.loading;
+      } else {
+        this.loading = false;
+      }
+    },
     "$store.state.users.isLogin": function () {
-      Swal.fire("Save!!!", "", "success");
       this.$router.push("/home");
     },
     "$store.state.users.token": function () {
@@ -142,7 +155,7 @@ export default {
         );
         this.authentication = true;
         this.user = this.$store.state.users.successSend.id;
-        this.$store.commit("users/HANDLE_GET_TOKEN_USER", null);
+        "users/HANDLE_GET_TOKEN_USER", null;
       }
     },
     "$store.state.users.error": function () {

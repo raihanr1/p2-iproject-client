@@ -1,5 +1,6 @@
 export default () => {
   return {
+    user: null,
     isLogin: false,
     error: null,
     token: null,
@@ -10,5 +11,9 @@ export default () => {
     properties: [],
     status: false,
     update: false,
+    userProperties: [],
+    createBookMark: false,
+    bookMarks: [],
+    loading: false,
   };
 };

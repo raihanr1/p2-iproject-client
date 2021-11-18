@@ -42,7 +42,6 @@ export default {
   },
   methods: {
     changeStatus: function () {
-      console.log(this.property.id, "ada ga");
       this.$store.dispatch("users/changeStatus", {
         status: this.status,
         id: this.property.id,
@@ -59,7 +58,6 @@ export default {
 
   watch: {
     "$store.state.users.status": function () {
-      console.log(this.$store.state.users.status, "asupppppppp");
       Swal.fire("Change status complete!", "", "success");
       this.$store.commit("users/HANDLE_CHANGE_STATUS", false);
     },
