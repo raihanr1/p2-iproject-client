@@ -123,6 +123,13 @@ const routes = [
   },
 ];
 
+router.beforeEach((to, from, next) => {
+  if (localStorage.getItem("access_token")) {
+    next("/home");
+  } else {
+    next("/login");
+  }
+});
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
