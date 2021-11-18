@@ -5,20 +5,17 @@
       width="1280px"
       height="550px"
     />
-    <div id="example">
-      <carousel-3d
-        :controls-visible="true"
-        :controls-prev-html="'&#10092; '"
-        :controls-next-html="'&#10093;'"
-        :controls-width="30"
-        :controls-height="60"
-        :clickable="false"
-      >
-        <slide v-for="(slide, i) in slides" :key="i" :index="i">
-          <img src="../assets/1636776478402.jpg" alt="test" />
-        </slide>
-      </carousel-3d>
-    </div>
+    <h1 class="text-center mt-5">This is best our product</h1>
+    <carousel-3d :controls-visible="true" :clickable="false">
+      <slide v-for="(property, i) in properties" :key="i" :index="i">
+        <figure>
+          <img :src="property.image_url" />
+          <figcaption>
+            {{ property.name }}
+          </figcaption>
+        </figure>
+      </slide>
+    </carousel-3d>
   </div>
 </template>
 
@@ -26,13 +23,27 @@
 import { Carousel3d, Slide } from "vue-carousel-3d";
 export default {
   data: function () {
-    return {
-      slides: 4,
-    };
+    return {};
   },
   components: {
     Carousel3d,
     Slide,
+  },
+  computed: {
+    properties: function () {
+      let data = [];
+      for (let i = 0; i < 3; i++) {
+        if (this.$store.state.users.userProperties[i]) {
+          data.push(this.$store.state.users.userProperties[i]);
+        } else {
+          break;
+        }
+      }
+      return data;
+    },
+  },
+  created: function () {
+    this.$store.dispatch("users/fetchAllPropertyUsers");
   },
 };
 </script>
